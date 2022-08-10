@@ -8,8 +8,8 @@ public class ConsoleProgress implements Runnable {
             char[] chars = {'\\', '|', '/'};
             int index = 0;
             while (!Thread.currentThread().isInterrupted()) {
-                index = index == 3 ? 0 : index;
-                System.out.println("\r load" + chars[index]);
+                index = index == chars.length ? 0 : index;
+                System.out.print("\r load" + chars[index]);
                 index++;
                 Thread.sleep(500);
             }
