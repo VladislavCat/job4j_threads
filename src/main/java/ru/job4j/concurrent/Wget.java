@@ -33,8 +33,8 @@ public class Wget implements Runnable {
             while (bytesRead != -1) {
                 downloadData += bytesRead;
                 if (downloadData >= speed) {
+                    secondIterate++;
                     if (new Date().getTime() < timeStart.getTime() + ONESECONDINMSECOND * secondIterate) {
-                        secondIterate++;
                         downloadData = 0;
                         Thread.sleep((ONESECONDINMSECOND - (timeStart.getTime() + ONESECONDINMSECOND * secondIterate
                                 - new Date().getTime()) / ONESECONDINMSECOND));
@@ -55,7 +55,6 @@ public class Wget implements Runnable {
         Thread wget = new Thread(new Wget(url, speed));
         Date startTime = new Date();
         wget.start();
-        System.out.println((new Date().getTime() - startTime.getTime()) / 1000 + " секунд.");
         wget.join();
         System.out.println((new Date().getTime() - startTime.getTime()) / 1000 + " секунд.");
     }
