@@ -1,10 +1,8 @@
 package ru.job4j.concurrent;
 
 import java.io.BufferedInputStream;
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
 
@@ -25,23 +23,22 @@ public class Wget implements Runnable {
                      = new BufferedInputStream(new URL(url).openStream());
              FileOutputStream out =
                      new FileOutputStream(url.substring(url.lastIndexOf(separatorURL) + 1))) {
-            Date timeStart = new Date();
-            long secondIterate = 1;
-            byte[] dataBuffer = new byte[speed];
+            long timeStart = new Date().getTime();
+            byte[] dataBuffer = new byte[1024];
             int downloadData = 0;
-            int bytesRead = in.read(dataBuffer, 0, speed);
+            int bytesRead = in.read(dataBuffer, 0, 1024);
             while (bytesRead != -1) {
                 downloadData += bytesRead;
                 if (downloadData >= speed) {
-                    secondIterate++;
-                    if (new Date().getTime() < timeStart.getTime() + ONESECONDINMSECOND * secondIterate) {
-                        downloadData = 0;
-                        Thread.sleep((ONESECONDINMSECOND - (timeStart.getTime() + ONESECONDINMSECOND * secondIterate
-                                - new Date().getTime()) / ONESECONDINMSECOND));
+                    downloadData = 0;
+                    timeStart += ONESECONDINMSECOND;
+                    long deltaTime = timeStart - new Date().getTime();
+                    if (deltaTime < 1000) {
+                        Thread.sleep(deltaTime);
                     }
                 }
                 out.write(dataBuffer, 0, bytesRead);
-                bytesRead = in.read(dataBuffer, 0, speed);
+                bytesRead = in.read(dataBuffer, 0, 1024);
             }
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
