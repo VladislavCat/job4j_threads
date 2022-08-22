@@ -1,4 +1,4 @@
-package ru.job4j.parser;
+package ru.job4j.concurrent.parser;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;

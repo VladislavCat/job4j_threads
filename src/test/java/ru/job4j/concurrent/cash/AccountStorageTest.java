@@ -1,6 +1,8 @@
-package ru.job4j.cash;
+package ru.job4j.concurrent.cash;
 
 import org.junit.jupiter.api.Test;
+
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
