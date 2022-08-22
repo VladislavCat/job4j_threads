@@ -13,18 +13,18 @@ public final class Content implements GetContent {
 
     @Override
     public synchronized String content(Predicate<Character> filter) {
-        String output = "";
+        StringBuilder output = new StringBuilder();
         try (InputStream i = new FileInputStream(file)) {
-            byte[] dataBuffer = new byte[i.available()];
+            byte[] dataBuffer = new byte[1024];
             int data;
-            while ((data = i.read(dataBuffer, 0, i.available())) > 0) {
+            while ((data = i.read(dataBuffer, 0, 1024)) != -1) {
                 if (filter.test((char) data)) {
-                    output = new String(dataBuffer, StandardCharsets.UTF_8);
+                    output.append(new String(dataBuffer, StandardCharsets.UTF_8));
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return output;
+        return output.toString();
     }
 }
