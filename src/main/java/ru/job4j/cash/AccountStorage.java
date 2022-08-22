@@ -6,34 +6,24 @@ import java.util.Optional;
 public class AccountStorage {
     private final HashMap<Integer, Account> accounts = new HashMap<>();
 
-    public boolean add(Account account) {
-        synchronized (accounts) {
-            return accounts.putIfAbsent(account.id(), account) != null;
-        }
+    public synchronized boolean add(Account account) {
+        return accounts.putIfAbsent(account.id(), account) != null;
     }
 
-    public boolean update(Account account) {
-        synchronized (accounts) {
-            accounts.replace(account.id(), account);
-            return getById(account.id()).get() == account;
-        }
+    public synchronized boolean update(Account account) {
+        return accounts.replace(account.id(), account) != null;
     }
 
-    public boolean delete(int id) {
-        synchronized (accounts) {
-            return accounts.remove(id) != null;
-        }
+    public synchronized boolean delete(int id) {
+        return accounts.remove(id) != null;
     }
 
-    public Optional<Account> getById(int id) {
-        synchronized (accounts) {
-            return Optional.ofNullable(accounts.get(id));
-        }
+    public synchronized Optional<Account> getById(int id) {
+        return Optional.ofNullable(accounts.get(id));
     }
 
-    public boolean transfer(int fromId, int toId, int amount) {
-        synchronized (accounts) {
-            boolean rsl = false;
+    public synchronized boolean transfer(int fromId, int toId, int amount) {
+            boolean rsl;
             Optional<Account> fromIdAcc = getById(fromId);
             Optional<Account> toIdAcc = getById(toId);
             if (fromIdAcc.isEmpty() || toIdAcc.isEmpty()) {
@@ -44,7 +34,7 @@ public class AccountStorage {
             rsl = update(new Account(fromId, fromIdAcc.get().amount() - amount));
             rsl = update(new Account(toId, toIdAcc.get().amount() + amount));
             return rsl;
-        }
     }
 }
+
 
