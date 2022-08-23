@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.TreeSet;
 
-import static org.hamcrest.core.Is.is;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SingleLockListTest {
