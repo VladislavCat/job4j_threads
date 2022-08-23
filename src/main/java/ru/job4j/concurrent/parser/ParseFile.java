@@ -11,9 +11,8 @@ public final class ParseFile {
     }
 
     public synchronized void saveContent(String content) {
-        try (OutputStream o = new FileOutputStream(file)) {
-            byte[] dataBuffer = content.getBytes(StandardCharsets.UTF_8);
-            o.write(dataBuffer);
+        try (BufferedWriter o = new BufferedWriter(new FileWriter(file))) {
+            o.write(content);
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -1,7 +1,6 @@
 package ru.job4j.concurrent.parser;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.function.Predicate;
 
 public final class Content implements GetContent {
@@ -14,13 +13,12 @@ public final class Content implements GetContent {
     @Override
     public synchronized String content(Predicate<Character> filter) {
         StringBuilder output = new StringBuilder();
-        try (InputStream i = new FileInputStream(file)) {
-            byte[] dataBuffer = new byte[1024];
-            int data;
-            while ((data = i.read(dataBuffer, 0, 1024)) != -1) {
-                if (filter.test((char) data)) {
-                    output.append(new String(dataBuffer, StandardCharsets.UTF_8));
-                }
+        try (BufferedReader i = new BufferedReader(new FileReader(file))) {
+            for (String str : i.lines().toList()) {
+                str.chars()
+                        .mapToObj(c -> (char) c)
+                        .filter(filter)
+                        .forEach(output::append);
             }
         } catch (IOException e) {
             e.printStackTrace();
