@@ -26,11 +26,19 @@ public class SimpleBlockingQueue<T> {
     }
 
     public synchronized T poll() throws InterruptedException {
-        while (queue.isEmpty()) {
+        while (isEmpty()) {
                 this.wait();
         }
         T rsl = queue.poll();
         notify();
         return rsl;
+    }
+
+    public synchronized boolean isEmpty() {
+        return copy().isEmpty();
+    }
+
+    private synchronized Queue<T> copy() {
+        return new LinkedList<>(queue);
     }
 }
