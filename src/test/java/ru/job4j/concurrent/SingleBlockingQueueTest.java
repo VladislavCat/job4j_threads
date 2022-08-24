@@ -11,15 +11,23 @@ public class SingleBlockingQueueTest {
 
     @Test
     public void whenAddTwoValueAndGetTwoValue() throws InterruptedException {
-        var sbq = new SimpleBlockingQueue<Integer>();
+        var sbq = new SimpleBlockingQueue<Integer>(2);
         var rsl = new ArrayList<Integer>();
         Thread first = new Thread(() -> {
-            sbq.offer(1);
-            sbq.offer(2);
+            try {
+                sbq.offer(1);
+                sbq.offer(2);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         });
         Thread second = new Thread(() -> {
-            rsl.add(sbq.poll());
-            rsl.add(sbq.poll());
+            try {
+                rsl.add(sbq.poll());
+                rsl.add(sbq.poll());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         });
         second.start();
         first.start();
