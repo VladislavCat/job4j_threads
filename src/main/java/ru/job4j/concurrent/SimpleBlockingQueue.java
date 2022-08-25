@@ -9,12 +9,11 @@ import java.util.Queue;
 @ThreadSafe
 public class SimpleBlockingQueue<T> {
     @GuardedBy("this")
-    private final Queue<T> queue;
+    private final Queue<T> queue = new LinkedList<>();
     private final int size;
 
     public SimpleBlockingQueue(int size) {
         this.size = size;
-        queue = new LinkedList<>();
     }
 
     public synchronized void offer(T value) throws InterruptedException {
@@ -35,10 +34,6 @@ public class SimpleBlockingQueue<T> {
     }
 
     public synchronized boolean isEmpty() {
-        return copy().isEmpty();
-    }
-
-    private synchronized Queue<T> copy() {
-        return new LinkedList<>(queue);
+        return queue.isEmpty();
     }
 }
