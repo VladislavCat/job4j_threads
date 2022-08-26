@@ -21,7 +21,7 @@ public class CacheTest {
         Base base = new Base(1, 1);
         Cache cache = new Cache();
         cache.add(base);
-        assertThat(cache.update(new Base(1, 2))).isEqualTo(true);
+        assertThat(cache.update(new Base(1, 1))).isEqualTo(true);
         assertThat(cache.get(1)).isEqualTo(new Base(1, 2));
     }
 
