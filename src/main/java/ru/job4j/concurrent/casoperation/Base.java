@@ -7,9 +7,10 @@ public class Base {
     private final int version;
     private String name;
 
-    public Base(int id, int version) {
+    public Base(int id, int version, String name) {
         this.id = id;
         this.version = version;
+        this.name = name;
     }
 
     public int getId() {
@@ -22,10 +23,6 @@ public class Base {
 
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     @Override
