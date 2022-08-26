@@ -10,26 +10,23 @@ public class ThreadPool {
     private final int size = Runtime.getRuntime().availableProcessors();
     private final SimpleBlockingQueue<Runnable> tasks = new SimpleBlockingQueue<>(size);
 
+    public ThreadPool() {
+        new Thread(() -> {
+            try {
+                tasks.poll().run();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
     public void work(Runnable job) throws InterruptedException {
         tasks.offer(job);
-        notifyAll();
     }
 
     public void shutdown() {
         for (Thread thread : threads) {
             thread.interrupt();
-        }
-    }
-
-    public void createThreads() throws InterruptedException {
-        for (int i = 0; i <= size; i++) {
-            threads.add(new Thread(tasks.poll()));
-        }
-    }
-
-    public void startTreads() {
-        for (Thread thread : threads) {
-            thread.start();
         }
     }
 }
