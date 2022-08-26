@@ -11,13 +11,19 @@ public class ThreadPool {
     private final SimpleBlockingQueue<Runnable> tasks = new SimpleBlockingQueue<>(size);
 
     public ThreadPool() {
-        new Thread(() -> {
-            try {
-                tasks.poll().run();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }).start();
+        while (threads.size() < size) {
+            threads.add(new Thread(() -> {
+                while (!Thread.currentThread().isInterrupted()) {
+                    try {
+                        tasks.poll().run();
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        e.printStackTrace();
+                    }
+                }
+            }));
+        }
+        threads.forEach(Thread::start);
     }
 
     public void work(Runnable job) throws InterruptedException {
