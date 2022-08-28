@@ -1,20 +1,20 @@
 package ru.job4j.concurrent.pool;
 
-import java.util.Arrays;
-import java.util.Date;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveTask;
 
-public class ParallelIndexOf extends RecursiveTask<Integer> {
+public class ParallelIndexOf<T> extends RecursiveTask<Integer> {
     private static final int FALSERSL = -1;
-    private final int value;
-    private final int[] array;
-    private final boolean flag;
+    private final T value;
+    private final T[] array;
+    private final int indexFrom;
+    private final int indexTo;
 
-    public ParallelIndexOf(int value, int[] array, boolean flag) {
+    public ParallelIndexOf(T value, T[] array, int indexFrom, int indexTo) {
         this.value = value;
         this.array = array;
-        this.flag = flag;
+        this.indexFrom = indexFrom;
+        this.indexTo = indexTo;
     }
 
     public int simpleIndexOf() {
@@ -22,7 +22,7 @@ public class ParallelIndexOf extends RecursiveTask<Integer> {
             return FALSERSL;
         }
         int rsl = FALSERSL;
-        for (int i = 0; i < array.length; i++) {
+        for (int i = indexFrom; i < indexTo; i++) {
             if (array[i] == value) {
                 rsl = i;
                 break;
@@ -33,26 +33,22 @@ public class ParallelIndexOf extends RecursiveTask<Integer> {
 
     @Override
     protected Integer compute() {
-        int rsl = 0;
-        if (array.length <= 10) {
+        if (indexTo - indexFrom <= 10) {
             int rslSIO = simpleIndexOf();
-            return rslSIO != -1 ? (flag ? rslSIO + array.length - 1 : rslSIO) : 0;
-        } else if (flag) {
-            rsl += array.length;
+            return rslSIO != -1 ? rslSIO : 0;
         }
-        int mid = array.length >> 1;
-        ParallelIndexOf leftSort = new ParallelIndexOf(value, Arrays.copyOf(array, mid), false);
-        ParallelIndexOf rightSort = new ParallelIndexOf(value, Arrays.copyOfRange(array, mid, array.length), true);
+        int mid = (indexFrom + indexTo) / 2;
+        ParallelIndexOf<T> leftSort = new ParallelIndexOf<>(value, array, 0, mid);
+        ParallelIndexOf<T> rightSort = new ParallelIndexOf<>(value, array, mid + 1, indexTo);
         leftSort.fork();
         rightSort.fork();
         int left = leftSort.join();
         int right = rightSort.join();
-        rsl += right - mid <= 0 ? left : right;
-        return rsl >= 0 ? rsl : -1;
+        return left == right ? left : right + left;
     }
 
-    public static int find(int value, int[] array) {
+    public static int find(int value, Integer[] array) {
         ForkJoinPool forkJoinPool = new ForkJoinPool();
-        return forkJoinPool.invoke(new ParallelIndexOf(value, array, false));
+        return forkJoinPool.invoke(new ParallelIndexOf<>(value, array, 0, array.length));
     }
 }
