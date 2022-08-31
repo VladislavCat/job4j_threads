@@ -34,8 +34,7 @@ public class ParallelIndexOf<T> extends RecursiveTask<Integer> {
     @Override
     protected Integer compute() {
         if (indexTo - indexFrom <= 10) {
-            int rslSIO = simpleIndexOf();
-            return rslSIO != -1 ? rslSIO : 0;
+            return simpleIndexOf();
         }
         int mid = (indexFrom + indexTo) / 2;
         ParallelIndexOf<T> leftSort = new ParallelIndexOf<>(value, array, 0, mid);
@@ -44,7 +43,7 @@ public class ParallelIndexOf<T> extends RecursiveTask<Integer> {
         rightSort.fork();
         int left = leftSort.join();
         int right = rightSort.join();
-        return left == right ? left : right + left;
+        return Math.max(left, right);
     }
 
     public static int find(int value, Integer[] array) {
