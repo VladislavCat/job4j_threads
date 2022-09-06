@@ -19,7 +19,8 @@ public class QueueService implements Service {
     }
 
     private Resp get(Req req) {
-        var que = queue.get(req.getSourceName());
-        return que != null ? new Resp(que.poll(), "200") : new Resp("", "204");
+        var que = queue.getOrDefault(req.getSourceName(), new ConcurrentLinkedQueue<>());
+        String s = que.poll();
+        return s != null ? new Resp(s, "200") : new Resp("", "204");
     }
 }
