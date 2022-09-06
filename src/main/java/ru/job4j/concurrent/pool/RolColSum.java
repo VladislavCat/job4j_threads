@@ -1,6 +1,5 @@
 package ru.job4j.concurrent.pool;
 
-import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
